@@ -14,11 +14,6 @@ services:
       neo4j:
         condition: service_healthy
 
-  frontend:
-    build: ./frontend
-    ports: ["3000:3000"]
-    depends_on: [backend]
-
   neo4j:
     image: neo4j:5-community
     ports: ["7474:7474", "7687:7687"]
@@ -26,7 +21,16 @@ services:
     environment:
       - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD:-querypilot}
     healthcheck:
-      test: ["CMD", "cypher-shell", "-u", "neo4j", "-p", "${NEO4J_PASSWORD:-querypilot}", "RETURN 1"]
+      test:
+        [
+          "CMD",
+          "cypher-shell",
+          "-u",
+          "neo4j",
+          "-p",
+          "${NEO4J_PASSWORD:-querypilot}",
+          "RETURN 1",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
